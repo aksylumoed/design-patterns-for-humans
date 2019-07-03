@@ -70,55 +70,48 @@ Wikipedia says
 **Programmatic Example**
 
 First of all we have a door interface and the implementation
-```php
-interface Door
-{
-    public function getWidth(): float;
-    public function getHeight(): float;
+```java
+interface Door {
+    public float getWidth();
+    public float getHeight();
 }
 
-class WoodenDoor implements Door
-{
-    protected $width;
-    protected $height;
-
-    public function __construct(float $width, float $height)
-    {
-        $this->width = $width;
-        $this->height = $height;
+class WoodenDoor implements Door {
+    protected float width;
+    protected float height;
+    
+    public WoodenDoor(float width, float height) {
+        this.width = width;
+        this.height = height;
     }
-
-    public function getWidth(): float
-    {
-        return $this->width;
+    
+    public float getWidth() { 
+        return this.width; 
     }
-
-    public function getHeight(): float
-    {
-        return $this->height;
+    
+    public float getHeight() { 
+        return this.height; 
     }
 }
 ```
 Then we have our door factory that makes the door and returns it
-```php
-class DoorFactory
-{
-    public static function makeDoor($width, $height): Door
-    {
-        return new WoodenDoor($width, $height);
+```java
+class DoorFactory {
+    public static Door makeDoor(float width, float height) {
+    
+        return new WoodenDoor(width, height);
     }
-}
+} 
 ```
 And then it can be used as
-```php
+```java
 // Make me a door of 100x200
-$door = DoorFactory::makeDoor(100, 200);
+Door door1 = DoorFactory.makeDoor(100, 200);
+System.out.println(door1.getHeight()); // 200.0
 
-echo 'Width: ' . $door->getWidth();
-echo 'Height: ' . $door->getHeight();
-
-// Make me a door of 50x100
-$door2 = DoorFactory::makeDoor(50, 100);
+// Make me a door of 45.5x100
+Door door2 = DoorFactory.makeDoor(45.5, 100);
+System.out.println(door2.getWidth()); // 45.5
 ```
 
 **When to Use?**
@@ -229,107 +222,91 @@ Wikipedia says
 
 Translating the door example above. First of all we have our `Door` interface and some implementation for it
 
-```php
-interface Door
-{
-    public function getDescription();
+```java
+interface Door {
+    public void getDescription();
 }
 
-class WoodenDoor implements Door
-{
-    public function getDescription()
-    {
-        echo 'I am a wooden door';
-    }
+class WoodenDoor implements Door {
+    
+    public void getDescription() {
+        System.out.println("This is a wooden door.");
+    }    
 }
 
-class IronDoor implements Door
-{
-    public function getDescription()
-    {
-        echo 'I am an iron door';
+class IronDoor implements Door {
+    
+    public void getDescription() {
+        System.out.println("This is an iron door.");
     }
 }
 ```
 Then we have some fitting experts for each door type
 
-```php
-interface DoorFittingExpert
-{
-    public function getDescription();
+```java
+interface DoorFittingExpert {
+    public void getDescription();
 }
 
-class Welder implements DoorFittingExpert
-{
-    public function getDescription()
-    {
-        echo 'I can only fit iron doors';
+class Carpenter implements DoorFittingExpert {
+    public void getDescription() {
+        System.out.println("I can only fit wooden doors.");
     }
 }
 
-class Carpenter implements DoorFittingExpert
-{
-    public function getDescription()
-    {
-        echo 'I can only fit wooden doors';
+class Welder implements DoorFittingExpert {
+    public void getDescription() {
+        System.out.println("I can only fit iron doors.");
     }
 }
 ```
 
 Now we have our abstract factory that would let us make family of related objects i.e. wooden door factory would create a wooden door and wooden door fitting expert and iron door factory would create an iron door and iron door fitting expert
 ```php
-interface DoorFactory
-{
-    public function makeDoor(): Door;
-    public function makeFittingExpert(): DoorFittingExpert;
+interface AbstractFactory {
+    public Door makeDoor();
+    public DoorFittingExpert makeFittingExpert();
 }
 
 // Wooden factory to return carpenter and wooden door
-class WoodenDoorFactory implements DoorFactory
-{
-    public function makeDoor(): Door
-    {
+class WoodenDoorFactory implements AbstractFactory {
+    public Door makeDoor() {
         return new WoodenDoor();
     }
-
-    public function makeFittingExpert(): DoorFittingExpert
-    {
+    
+    public DoorFittingExpert makeFittingExpert() {
         return new Carpenter();
     }
 }
 
 // Iron door factory to get iron door and the relevant fitting expert
-class IronDoorFactory implements DoorFactory
-{
-    public function makeDoor(): Door
-    {
+class IronDoorFactory implements AbstractFactory {
+    public Door makeDoor() {
         return new IronDoor();
     }
-
-    public function makeFittingExpert(): DoorFittingExpert
-    {
+    
+    public DoorFittingExpert makeFittingExpert() {
         return new Welder();
     }
 }
 ```
 And then it can be used as
-```php
-$woodenFactory = new WoodenDoorFactory();
+```java
+WoodenDoorFactory wFactory = new WoodenDoorFactory();
+        
+Door wDoor = wFactory.makeDoor();
+DoorFittingExpert wExpert = wFactory.makeFittingExpert();
 
-$door = $woodenFactory->makeDoor();
-$expert = $woodenFactory->makeFittingExpert();
+wDoor.getDescription(); //This is a wooden door.
+wExpert.getDescription(); // I can only fit wooden doors.
 
-$door->getDescription();  // Output: I am a wooden door
-$expert->getDescription(); // Output: I can only fit wooden doors
+IronDoorFactory iFactory = new IronDoorFactory();
 
-// Same for Iron Factory
-$ironFactory = new IronDoorFactory();
+Door iDoor = iFactory.makeDoor();
+DoorFittingExpert iExpert = iFactory.makeFittingExpert();
 
-$door = $ironFactory->makeDoor();
-$expert = $ironFactory->makeFittingExpert();
-
-$door->getDescription();  // Output: I am an iron door
-$expert->getDescription(); // Output: I can only fit iron doors
+iDoor.getDescription(); //This is a wooden door.
+iExpert.getDescription(); // I can only fit wooden doors.
 ```
 
 As you can see the wooden door factory has encapsulated the `carpenter` and the `wooden door` also iron door factory has encapsulated the `iron door` and `welder`. And thus it had helped us make sure that for each of the created door, we do not get a wrong fitting expert.   
