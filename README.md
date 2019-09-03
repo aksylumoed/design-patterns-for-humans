@@ -119,7 +119,7 @@ System.out.println(door2.getWidth()); // 45.5
 
 When creating an object is not just a few assignments and involves some logic, it makes sense to put it in a dedicated factory instead of repeating the same code everywhere.
 
-🏭 Factory Method
+🏭 Factory Method [[↥](#creational-design-patterns)]
 --------------
 
 Real world example
@@ -207,7 +207,7 @@ $marketingManager->takeInterview(); // Output: Asking about community building.
 
 Useful when there is some generic processing in a class but the required sub-class is dynamically decided at runtime. Or putting it in other words, when the client doesn't know what exact sub-class it might need.
 
-🔨 Abstract Factory
+🔨 Abstract Factory [[↥](#creational-design-patterns)]
 ----------------
 
 Real world example
@@ -316,7 +316,7 @@ As you can see the wooden door factory has encapsulated the `carpenter` and the 
 
 When there are interrelated dependencies with not-that-simple creation logic involved
 
-👷 Builder
+👷 Builder [[↥](#creational-design-patterns)]
 --------------------------------------------
 Real world example
 > Imagine you are at Hardee's and you order a specific deal, lets say, "Big Hardee" and they hand it over to you without *any questions*; this is the example of simple factory. But there are cases when the creation logic might involve more steps. For example you want a customized Subway deal, you have several options in how your burger is made e.g what bread do you want? what types of sauces would you like? What cheese would you want? etc. In such cases builder pattern comes to the rescue.
@@ -423,7 +423,7 @@ $burger = (new BurgerBuilder(14))
 
 When there could be several flavors of an object and to avoid the constructor telescoping. The key difference from the factory pattern is that; factory pattern is to be used when the creation is a one step process while builder pattern is to be used when the creation is a multi step process.
 
-🐑 Prototype
+🐑 Prototype [[↥](#creational-design-patterns)]
 ------------
 Real world example
 > Remember dolly? The sheep that was cloned! Lets not get into the details but the key point here is that it is all about cloning
@@ -492,7 +492,7 @@ Also you could use the magic method `__clone` to modify the cloning behavior.
 
 When an object is required that is similar to existing object or when the creation would be expensive as compared to cloning.
 
-💍 Singleton
+💍 Singleton [[↥](#creational-design-patterns)]
 ------------
 Real world example
 > There can only be one president of a country at a time. The same president has to be brought to action, whenever duty calls. President here is singleton.
@@ -546,7 +546,7 @@ $president2 = President::getInstance();
 var_dump($president1 === $president2); // true
 ```
 
-Structural Design Patterns
+Structural Design Patterns [[↥](#introduction)]
 ==========================
 In plain words
 > Structural patterns are mostly concerned with object composition or in other words how the entities can use each other. Or yet another explanation would be, they help in answering "How to build a software component?"
@@ -562,7 +562,7 @@ Wikipedia says
  * [Flyweight](#-flyweight)
  * [Proxy](#-proxy)
 
-🔌 Adapter
+🔌 Adapter [[↥](#structural-design-patterns)]
 -------
 Real world example
 > Consider that you have some pictures in your memory card and you need to transfer them to your computer. In order to transfer them you need some kind of adapter that is compatible with your computer ports so that you can attach memory card to your computer. In this case card reader is an adapter.
@@ -649,7 +649,7 @@ $hunter = new Hunter();
 $hunter->hunt($wildDogAdapter);
 ```
 
-🚡 Bridge
+🚡 Bridge [[↥](#structural-design-patterns)]
 ------
 Real world example
 > Consider you have a website with different pages and you are supposed to allow the user to change the theme. What would you do? Create multiple copies of each of the pages for each of the themes or would you just create separate theme and load them based on the user's preferences? Bridge pattern allows you to do the second i.e.
@@ -744,7 +744,7 @@ echo $about->getContent(); // "About page in Dark Black";
 echo $careers->getContent(); // "Careers page in Dark Black";
 ```
 
-🌿 Composite
+🌿 Composite [[↥](#structural-design-patterns)]
 -----------------
 
 Real world example
@@ -877,7 +877,7 @@ $organization->addEmployee($jane);
 echo "Net salaries: " . $organization->getNetSalaries(); // Net Salaries: 27000
 ```
 
-☕ Decorator
+☕ Decorator [[↥](#structural-design-patterns)]
 -------------
 
 Real world example
@@ -997,7 +997,7 @@ echo $someCoffee->getCost(); // 20
 echo $someCoffee->getDescription(); // Simple Coffee, milk, whip, vanilla
 ```
 
-📦 Facade
+📦 Facade [[↥](#structural-design-patterns)]
 ----------------
 
 Real world example
@@ -1086,7 +1086,7 @@ $computer->turnOn(); // Ouch! Beep beep! Loading.. Ready to be used!
 $computer->turnOff(); // Bup bup buzzz! Haah! Zzzzz
 ```
 
-🍃 Flyweight
+🍃 Flyweight [[↥](#structural-design-patterns)]
 ---------
 
 Real world example
@@ -1167,7 +1167,7 @@ $shop->serve();
 // Serving tea to table# 5
 ```
 
-🎱 Proxy
+🎱 Proxy [[↥](#structural-design-patterns)]
 -------------------
 Real world example
 > Have you ever used an access card to go through a door? There are multiple options to open that door i.e. it can be opened either using access card or by pressing a button that bypasses the security. The door's main functionality is to open but there is a proxy added on top of it to add some functionality. Let me better explain it using the code example below.
@@ -1243,7 +1243,7 @@ $door->close(); // Closing lab door
 ```
 Yet another example would be some sort of data-mapper implementation. For example, I recently made an ODM (Object Data Mapper) for MongoDB using this pattern where I wrote a proxy around mongo classes while utilizing the magic method `__call()`. All the method calls were proxied to the original mongo class and result retrieved was returned as it is but in case of `find` or `findOne` data was mapped to the required class objects and the object was returned instead of `Cursor`.
 
-Behavioral Design Patterns
+Behavioral Design Patterns [[↥](#introduction)]
 ==========================
 
 In plain words
@@ -1263,7 +1263,7 @@ Wikipedia says
 * [State](#-state)
 * [Template Method](#-template-method)
 
-🔗 Chain of Responsibility
+🔗 Chain of Responsibility [[↥](#behavioral-design-patterns)]
 -----------------------
 
 Real world example
@@ -1366,7 +1366,7 @@ $bank->pay(259);
 // Paid 259 using Bitcoin!
 ```
 
-👮 Command
+👮 Command [[↥](#behavioral-design-patterns)]
 -------
 
 Real world example
@@ -1482,7 +1482,7 @@ $remote->submit($turnOff); // Darkness!
 
 Command pattern can also be used to implement a transaction based system. Where you keep maintaining the history of commands as soon as you execute them. If the final command is successfully executed, all good otherwise just iterate through the history and keep executing the `undo` on all the executed commands.
 
-➿ Iterator
+➿ Iterator [[↥](#behavioral-design-patterns)]
 --------
 
 Real world example
@@ -1588,7 +1588,7 @@ foreach($stationList as $station) {
 $stationList->removeStation(new RadioStation(89)); // Will remove station 89
 ```
 
-👽 Mediator
+👽 Mediator [[↥](#behavioral-design-patterns)]
 ========
 
 Real world example
@@ -1660,7 +1660,7 @@ $jane->send('Hey!');
 // Feb 14, 10:58 [Jane]: Hey!
 ```
 
-💾 Memento
+💾 Memento [[↥](#behavioral-design-patterns)]
 -------
 Real world example
 > Take the example of calculator (i.e. originator), where whenever you perform some calculation the last calculation is saved in memory (i.e. memento) so that you can get back to it and maybe get it restored using some action buttons (i.e. caretaker).
@@ -1749,7 +1749,7 @@ $editor->restore($saved);
 $editor->getContent(); // This is the first sentence. This is second.
 ```
 
-😎 Observer
+😎 Observer [[↥](#behavioral-design-patterns)]
 --------
 Real world example
 > A good example would be the job seekers where they subscribe to some job posting site and they are notified whenever there is a matching job opportunity.   
@@ -1838,7 +1838,7 @@ $jobPostings->addJob(new JobPost('Software Engineer'));
 // Hi Jane Doe! New job posted: Software Engineer
 ```
 
-🏃 Visitor
+🏃 Visitor [[↥](#behavioral-design-patterns)]
 -------
 Real world example
 > Consider someone visiting Dubai. They just need a way (i.e. visa) to enter Dubai. After arrival, they can come and visit any place in Dubai on their own without having to ask for permission or to do some leg work in order to visit any place here; just let them know of a place and they can visit it. Visitor pattern lets you do just that, it helps you add places to visit so that they can visit as much as they can without having to do any legwork.
@@ -1977,8 +1977,8 @@ $dolphin->accept($speak);  // Tuut tutt tuutt!
 $dolphin->accept($jump);   // Walked on water a little and disappeared
 ```
 
-💡 Strategy
---------
+💡 Strategy [[↥](#behavioral-design-patterns)]
+-------- 
 
 Real world example
 > Consider the example of sorting, we implemented bubble sort but the data started to grow and bubble sort started getting very slow. In order to tackle this we implemented Quick sort. But now although the quick sort algorithm was doing better for large datasets, it was very slow for smaller datasets. In order to handle this we implemented a strategy where for small datasets, bubble sort will be used and for larger, quick sort.
@@ -2050,7 +2050,7 @@ $sorter = new Sorter(new QuickSortStrategy());
 $sorter->sort($dataset); // Output : Sorting using quick sort
 ```
 
-💢 State
+💢 State [[↥](#behavioral-design-patterns)]
 -----
 Real world example
 > Imagine you are using some drawing application, you choose the paint brush to draw. Now the brush changes its behavior based on the selected color i.e. if you have chosen red color it will draw in red, if blue then it will be in blue etc.  
@@ -2144,7 +2144,7 @@ $editor->type('Fifth line');
 // fifth line
 ```
 
-📒 Template Method
+📒 Template Method [[↥](#behavioral-design-patterns)]
 ---------------
 
 Real world example
