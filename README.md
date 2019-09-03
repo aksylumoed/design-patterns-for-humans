@@ -135,72 +135,63 @@ Wikipedia says
 
 Taking our hiring manager example above. First of all we have an interviewer interface and some implementations for it
 
-```php
-interface Interviewer
-{
-    public function askQuestions();
+```java
+interface Interviewer {
+    public void askQuestions();
 }
 
-class Developer implements Interviewer
-{
-    public function askQuestions()
-    {
-        echo 'Asking about design patterns!';
+class Developer implements Interviewer {
+    
+    public void askQuestions() {
+        System.out.println("Asking about design patterns!");
     }
 }
 
-class CommunityExecutive implements Interviewer
-{
-    public function askQuestions()
-    {
-        echo 'Asking about community building';
+class CommunityExecutive implements Interviewer {
+    
+    public void askQuestions() {
+        System.out.println("Asking about community building!");
     }
 }
 ```
 
 Now let us create our `HiringManager`
 
-```php
-abstract class HiringManager
-{
-
-    // Factory method
-    abstract protected function makeInterviewer(): Interviewer;
-
-    public function takeInterview()
-    {
-        $interviewer = $this->makeInterviewer();
-        $interviewer->askQuestions();
+```java
+abstract class HiringManager {
+    
+    // Factory Method
+    abstract protected Interviewer makeInterviewer();
+    
+    public void takeInterview() {
+        Interviewer interviewer = this.makeInterviewer();
+        interviewer.askQuestions();
     }
 }
 
 ```
 Now any child can extend it and provide the required interviewer
-```php
-class DevelopmentManager extends HiringManager
-{
-    protected function makeInterviewer(): Interviewer
-    {
+```java
+class DevelopmentManager extends HiringManager {
+    protected Interviewer makeInterviewer() {
         return new Developer();
     }
 }
 
-class MarketingManager extends HiringManager
-{
-    protected function makeInterviewer(): Interviewer
-    {
+class MarketingManager extends HiringManager {
+    protected Interviewer makeInterviewer() {
         return new CommunityExecutive();
     }
 }
 ```
 and then it can be used as
 
-```php
-$devManager = new DevelopmentManager();
-$devManager->takeInterview(); // Output: Asking about design patterns
+```java
+DevelopmentManager devManager = new DevelopmentManager();
+devManager.takeInterview(); // "Asking about design patterns!"
 
-$marketingManager = new MarketingManager();
-$marketingManager->takeInterview(); // Output: Asking about community building.
+MarketingManager marketingManager = new MarketingManager();
+marketingManager.takeInterview(); // "Asking about community building!"
 ```
 
 **When to use?**
@@ -263,7 +254,7 @@ class Welder implements DoorFittingExpert {
 ```
 
 Now we have our abstract factory that would let us make family of related objects i.e. wooden door factory would create a wooden door and wooden door fitting expert and iron door factory would create an iron door and iron door fitting expert
-```php
+```java
 interface AbstractFactory {
     public Door makeDoor();
     public DoorFittingExpert makeFittingExpert();
@@ -329,9 +320,9 @@ Wikipedia says
 
 Having said that let me add a bit about what telescoping constructor anti-pattern is. At one point or the other we have all seen a constructor like below:
 
-```php
-public function __construct($size, $cheese = true, $pepperoni = true, $tomato = false, $lettuce = true)
-{
+```java
+public Burger(int size, boolean cheese, boolean pepperoni, boolean tomato, boolean lettuce) {
+    //...
 }
 ```
 
@@ -341,82 +332,75 @@ As you can see; the number of constructor parameters can quickly get out of hand
 
 The sane alternative is to use the builder pattern. First of all we have our burger that we want to make
 
-```php
-class Burger
-{
-    protected $size;
-
-    protected $cheese = false;
-    protected $pepperoni = false;
-    protected $lettuce = false;
-    protected $tomato = false;
-
-    public function __construct(BurgerBuilder $builder)
-    {
-        $this->size = $builder->size;
-        $this->cheese = $builder->cheese;
-        $this->pepperoni = $builder->pepperoni;
-        $this->lettuce = $builder->lettuce;
-        $this->tomato = $builder->tomato;
+```java
+class Burger {
+    protected int size;
+    
+    protected boolean cheese;
+    protected boolean pepperoni;
+    protected boolean lettuce;
+    protected boolean tomato;
+    
+    public Burger(BurgerBuilder builder) {
+        this.size = builder.size;
+        this.cheese = builder.cheese;
+        this.pepperoni = builder.pepperoni;
+        this.lettuce = builder.lettuce;
+        this.tomato = builder.tomato;
     }
+    
 }
 ```
 
 And then we have the builder
 
-```php
-class BurgerBuilder
-{
-    public $size;
+```java
+class BurgerBuilder {
 
-    public $cheese = false;
-    public $pepperoni = false;
-    public $lettuce = false;
-    public $tomato = false;
-
-    public function __construct(int $size)
-    {
-        $this->size = $size;
+    public int size;
+    
+    public boolean cheese;
+    public boolean pepperoni;
+    public boolean lettuce;
+    public boolean tomato;
+    
+    BurgerBuilder(int size) {
+        this.size = size;
     }
-
-    public function addPepperoni()
-    {
-        $this->pepperoni = true;
-        return $this;
+    
+    public BurgerBuilder addPepperoni() {
+        this.pepperoni = true;
+        return this;
     }
-
-    public function addLettuce()
-    {
-        $this->lettuce = true;
-        return $this;
+    
+    public BurgerBuilder addCheese() {
+        this.cheese = true;
+        return this;
     }
-
-    public function addCheese()
-    {
-        $this->cheese = true;
-        return $this;
+    
+    public BurgerBuilder addLettuce() {
+        this.lettuce = true;
+        return this;
     }
-
-    public function addTomato()
-    {
-        $this->tomato = true;
-        return $this;
+    
+    public BurgerBuilder addTomato() {
+        this.tomato = true;
+        return this;
     }
-
-    public function build(): Burger
-    {
-        return new Burger($this);
+    
+    public Burger build() {
+        return new Burger(this);
     }
 }
 ```
 And then it can be used as:
 
-```php
-$burger = (new BurgerBuilder(14))
-                    ->addPepperoni()
-                    ->addLettuce()
-                    ->addTomato()
-                    ->build();
+```java
+Burger burger = new BurgerBuilder(10)
+                        .addTomato()
+                        .addLettuce()
+                        .addPepperoni()
+                        .build();
 ```
 
 **When to use?**
