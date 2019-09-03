@@ -56,7 +56,7 @@ Wikipedia says
  * [Prototype](#-prototype)
  * [Singleton](#-singleton)
 
-🏠 Simple Factory [top](#-introduction)
+🏠 Simple Factory [top](#introduction)
 --------------
 
 Real world example
