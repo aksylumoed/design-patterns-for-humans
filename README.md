@@ -56,8 +56,9 @@ Wikipedia says
  * [Prototype](#-prototype)
  * [Singleton](#-singleton)
 
-🏠 Simple Factory [[↥](#creational-design-patterns)]
+🏠 Simple Factory
 --------------
+ [[↥](#creational-design-patterns)]
 
 Real world example
 > Consider, you are building a house and you need doors. You can either put on your carpenter clothes, bring some wood, glue, nails and all the tools required to build the door and start building it in your house or you can simply call the factory and get the built door delivered to you so that you don't need to learn anything about the door making or to deal with the mess that comes with making it.
@@ -119,8 +120,9 @@ System.out.println(door2.getWidth()); // 45.5
 
 When creating an object is not just a few assignments and involves some logic, it makes sense to put it in a dedicated factory instead of repeating the same code everywhere.
 
-🏭 Factory Method [[↥](#creational-design-patterns)]
+🏭 Factory Method
 --------------
+[[↥](#creational-design-patterns)]
 
 Real world example
 > Consider the case of a hiring manager. It is impossible for one person to interview for each of the positions. Based on the job opening, she has to decide and delegate the interview steps to different people.
