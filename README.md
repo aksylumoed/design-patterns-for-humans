@@ -56,7 +56,7 @@ Wikipedia says
  * [Prototype](#-prototype)
  * [Singleton](#-singleton)
 
-🏠 Simple Factory [top](#introduction)
+🏠 Simple Factory <div style="text-align: right"> [top](#introduction) </div>
 --------------
 
 Real world example
