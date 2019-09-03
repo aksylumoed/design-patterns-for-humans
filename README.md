@@ -56,7 +56,7 @@ Wikipedia says
  * [Prototype](#-prototype)
  * [Singleton](#-singleton)
 
-🏠 Simple Factory <div style="text-align: right"> [top](#introduction) </div>
+🏠 Simple Factory [[↥](#creational-design-patterns)]
 --------------
 
 Real world example
