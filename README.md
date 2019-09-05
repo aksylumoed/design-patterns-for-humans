@@ -538,8 +538,9 @@ Wikipedia says
  * [Flyweight](#-flyweight)
  * [Proxy](#-proxy)
 
-🔌 Adapter [[↥](#structural-design-patterns)]
+🔌 Adapter 
 -------
+[[↥](#structural-design-patterns)]
 Real world example
 > Consider that you have some pictures in your memory card and you need to transfer them to your computer. In order to transfer them you need some kind of adapter that is compatible with your computer ports so that you can attach memory card to your computer. In this case card reader is an adapter.
 > Another example would be the famous power adapter; a three legged plug can't be connected to a two pronged outlet, it needs to use a power adapter that makes it compatible with the two pronged outlet.
@@ -557,76 +558,68 @@ Consider a game where there is a hunter and he hunts lions.
 
 First we have an interface `Lion` that all types of lions have to implement
 
-```php
-interface Lion
-{
-    public function roar();
+```java
+interface Lion {
+    public void roar();
 }
 
-class AfricanLion implements Lion
-{
-    public function roar()
-    {
+class AfricanLion implements Lion {
+    public void roar() {
+        System.out.println("Rooooaarr!");
     }
 }
 
-class AsianLion implements Lion
-{
-    public function roar()
-    {
+class AsianLion implements Lion {
+    public void roar() {
+        System.out.println("Roaaaarr!");
     }
 }
 ```
 And hunter expects any implementation of `Lion` interface to hunt.
-```php
-class Hunter
-{
-    public function hunt(Lion $lion)
-    {
-        $lion->roar();
+```java
+class Hunter {
+    public void hunt(Lion lion) {
+        lion.roar();
     }
 }
 ```
 
 Now let's say we have to add a `WildDog` in our game so that hunter can hunt that also. But we can't do that directly because dog has a different interface. To make it compatible for our hunter, we will have to create an adapter that is compatible
 
-```php
+```java
 // This needs to be added to the game
-class WildDog
-{
-    public function bark()
-    {
-    }
+class WildDog {
+    public void bark() {
+        System.out.println("WoooofWooff!");
+    }    
 }
 
-// Adapter around wild dog to make it compatible with our game
-class WildDogAdapter implements Lion
-{
-    protected $dog;
-
-    public function __construct(WildDog $dog)
-    {
-        $this->dog = $dog;
+// Object Adapter around wild dog to make it compatible with our game
+class WildDogAdapter implements Lion {
+    protected WildDog dog;
+    
+    public WildDogAdapter(WildDog dog) {
+        this.dog = dog;
     }
-
-    public function roar()
-    {
-        $this->dog->bark();
+    
+    public void roar() {
+        this.dog.bark();
     }
 }
 ```
 And now the `WildDog` can be used in our game using `WildDogAdapter`.
 
-```php
-$wildDog = new WildDog();
-$wildDogAdapter = new WildDogAdapter($wildDog);
+```java
+WildDog dog = new WildDog();
+WildDogAdapter dogAdapter = new WildDogAdapter(dog);
 
-$hunter = new Hunter();
-$hunter->hunt($wildDogAdapter);
+Hunter hunter = new Hunter();
+hunter.hunt(dogAdapter);  // WoooofWooff!
 ```
 
-🚡 Bridge [[↥](#structural-design-patterns)]
+🚡 Bridge
 ------
+[[↥](#structural-design-patterns)]
 Real world example
 > Consider you have a website with different pages and you are supposed to allow the user to change the theme. What would you do? Create multiple copies of each of the pages for each of the themes or would you just create separate theme and load them based on the user's preferences? Bridge pattern allows you to do the second i.e.
 
@@ -643,85 +636,71 @@ Wikipedia says
 Translating our WebPage example from above. Here we have the `WebPage` hierarchy
 
 ```php
-interface WebPage
-{
-    public function __construct(Theme $theme);
-    public function getContent();
+interface WebPage {
+    public void getContent();
 }
 
-class About implements WebPage
-{
-    protected $theme;
-
-    public function __construct(Theme $theme)
-    {
-        $this->theme = $theme;
+class AboutPage implements WebPage {
+    Theme theme;
+    
+    public AboutPage(Theme theme) {
+        this.theme = theme;
     }
-
-    public function getContent()
-    {
-        return "About page in " . $this->theme->getColor();
+    
+    public void getContent() {
+        System.out.println("About page in " + theme.getColor());
     }
 }
 
-class Careers implements WebPage
-{
-    protected $theme;
-
-    public function __construct(Theme $theme)
-    {
-        $this->theme = $theme;
+class CareersPage implements WebPage {
+    Theme theme;
+    
+    public CareersPage(Theme theme) {
+        this.theme = theme;
     }
-
-    public function getContent()
-    {
-        return "Careers page in " . $this->theme->getColor();
+    
+    public void getContent() {
+        System.out.println("Careers page in " + theme.getColor());
     }
 }
 ```
 And the separate theme hierarchy
-```php
-
-interface Theme
-{
-    public function getColor();
+```java
+interface Theme {
+    public String getColor();
 }
 
-class DarkTheme implements Theme
-{
-    public function getColor()
-    {
-        return 'Dark Black';
+class DarkTheme implements Theme {
+    
+    public String getColor() {
+        return "Dark Black";
     }
 }
-class LightTheme implements Theme
-{
-    public function getColor()
-    {
-        return 'Off white';
+
+class LightTheme implements Theme {
+    
+    public String getColor() {
+        return "Off white";
     }
 }
-class AquaTheme implements Theme
-{
-    public function getColor()
-    {
-        return 'Light blue';
+
+class AquaTheme implements Theme {
+    
+    public String getColor() {
+        return "Light Blue";
     }
 }
 ```
 And both the hierarchies
 ```php
-$darkTheme = new DarkTheme();
-
-$about = new About($darkTheme);
-$careers = new Careers($darkTheme);
-
-echo $about->getContent(); // "About page in Dark Black";
-echo $careers->getContent(); // "Careers page in Dark Black";
+// DarkTheme darkTheme = new DarkTheme();
+AboutPage about = new AboutPage(new DarkTheme());
+about.getContent(); // About page in Dark Black
 ```
 
-🌿 Composite [[↥](#structural-design-patterns)]
+🌿 Composite 
 -----------------
+[[↥](#structural-design-patterns)]
 
 Real world example
 > Every organization is composed of employees. Each of the employees has the same features i.e. has a salary, has some responsibilities, may or may not report to someone, may or may not have some subordinates etc.
@@ -736,126 +715,100 @@ Wikipedia says
 
 Taking our employees example from above. Here we have different employee types
 
-```php
-interface Employee
-{
-    public function __construct(string $name, float $salary);
-    public function getName(): string;
-    public function setSalary(float $salary);
-    public function getSalary(): float;
-    public function getRoles(): array;
+```java
+// Component
+interface Employee {
+    public String getName();
+    public void setSalary(float Salary);
+    public float getSalary();
 }
-
-class Developer implements Employee
-{
-    protected $salary;
-    protected $name;
-    protected $roles;
+// Leaf
+class Developer implements Employee {
+    String name;
+    float salary;
     
-    public function __construct(string $name, float $salary)
-    {
-        $this->name = $name;
-        $this->salary = $salary;
+    Developer(String name, float salary) {
+        this.name = name;
+        this.salary = salary;
     }
-
-    public function getName(): string
-    {
-        return $this->name;
+    
+    public String getName() {
+        return this.name;
     }
-
-    public function setSalary(float $salary)
-    {
-        $this->salary = $salary;
+    
+    public float getSalary() {
+        return this.salary;
     }
-
-    public function getSalary(): float
-    {
-        return $this->salary;
-    }
-
-    public function getRoles(): array
-    {
-        return $this->roles;
+    
+    public void setSalary(float salary) {
+        this.salary = salary;
     }
 }
-
-class Designer implements Employee
-{
-    protected $salary;
-    protected $name;
-    protected $roles;
-
-    public function __construct(string $name, float $salary)
-    {
-        $this->name = $name;
-        $this->salary = $salary;
+// Leaf
+class Manager implements Employee {
+    String name;
+    float salary;
+    
+    Manager(String name, float salary) {
+        this.name = name;
+        this.salary = salary;
     }
-
-    public function getName(): string
-    {
-        return $this->name;
+    
+    public String getName() {
+        return this.name;
     }
-
-    public function setSalary(float $salary)
-    {
-        $this->salary = $salary;
+    
+    public float getSalary() {
+        return this.salary;
     }
-
-    public function getSalary(): float
-    {
-        return $this->salary;
-    }
-
-    public function getRoles(): array
-    {
-        return $this->roles;
+    
+    public void setSalary(float salary) {
+        this.salary = salary;
     }
 }
 ```
 
 Then we have an organization which consists of several different types of employees
 
-```php
-class Organization
-{
-    protected $employees;
-
-    public function addEmployee(Employee $employee)
-    {
-        $this->employees[] = $employee;
+```java
+// Composite
+class Organization {
+    List<Employee> employees = new ArrayList<>();
+    
+    public void addEmployee(Employee employee) {
+        employees.add(employee);
     }
-
-    public function getNetSalaries(): float
-    {
-        $netSalary = 0;
-
-        foreach ($this->employees as $employee) {
-            $netSalary += $employee->getSalary();
-        }
-
-        return $netSalary;
+    
+    public float getNetSalaries() {
+        float netSalary = 0;
+        
+        for(Employee employee : employees) // Delegation
+            netSalary += employee.getSalary();
+        
+        return netSalary;
     }
 }
 ```
 
 And then it can be used as
 
-```php
+```java
+/* Client -- */
 // Prepare the employees
-$john = new Developer('John Doe', 12000);
-$jane = new Designer('Jane Doe', 15000);
+Developer developer = new Developer("Leslie", 26000);
+Manager manager = new Manager("Ken", 32000);
 
-// Add them to organization
-$organization = new Organization();
-$organization->addEmployee($john);
-$organization->addEmployee($jane);
+// Add them to organization (create a composite)
+Organization org = new Organization();
+org.addEmployee(developer);
+org.addEmployee(manager);
 
-echo "Net salaries: " . $organization->getNetSalaries(); // Net Salaries: 27000
+System.out.println(org.getNetSalaries());  // 58000.0
 ```
 
-☕ Decorator [[↥](#structural-design-patterns)]
+☕ Decorator 
 -------------
-
+[[↥](#structural-design-patterns)]
 Real world example
 
 > Imagine you run a car service shop offering multiple services. Now how do you calculate the bill to be charged? You pick one service and dynamically keep adding to it the prices for the provided services till you get the final cost. Here each type of service is a decorator.
@@ -870,111 +823,109 @@ Wikipedia says
 
 Lets take coffee for example. First of all we have a simple coffee implementing the coffee interface
 
-```php
-interface Coffee
-{
-    public function getCost();
-    public function getDescription();
+```java
+interface Coffee {
+    public double getCost();
+    public String getDescription();
 }
 
-class SimpleCoffee implements Coffee
-{
-    public function getCost()
-    {
-        return 10;
+class SimpleCoffee implements Coffee {
+    public double getCost() {
+        return 10.0;
     }
-
-    public function getDescription()
-    {
-        return 'Simple coffee';
+    
+    public String getDescription() {
+        return "Simple coffee";
     }
 }
 ```
 We want to make the code extensible to allow options to modify it if required. Lets make some add-ons (decorators)
-```php
-class MilkCoffee implements Coffee
-{
-    protected $coffee;
-
-    public function __construct(Coffee $coffee)
-    {
-        $this->coffee = $coffee;
+```java
+// note: it implements coffee
+abstract class CoffeeDecorator implements Coffee {
+    Coffee coffee;
+    
+    public CoffeeDecorator(Coffee coffee) {
+        this.coffee = coffee;
     }
-
-    public function getCost()
-    {
-        return $this->coffee->getCost() + 2;
+    
+    @Override
+    public double getCost() {
+        return coffee.getCost();
     }
-
-    public function getDescription()
-    {
-        return $this->coffee->getDescription() . ', milk';
-    }
-}
-
-class WhipCoffee implements Coffee
-{
-    protected $coffee;
-
-    public function __construct(Coffee $coffee)
-    {
-        $this->coffee = $coffee;
-    }
-
-    public function getCost()
-    {
-        return $this->coffee->getCost() + 5;
-    }
-
-    public function getDescription()
-    {
-        return $this->coffee->getDescription() . ', whip';
+    
+    @Override
+    public String getDescription() {
+        return coffee.getDescription();
     }
 }
 
-class VanillaCoffee implements Coffee
-{
-    protected $coffee;
-
-    public function __construct(Coffee $coffee)
-    {
-        $this->coffee = $coffee;
+class MilkCoffee extends CoffeeDecorator {
+    // protected Coffee c; // also works if there's no abstract class
+    public MilkCoffee(Coffee c) {
+        super(c); // invoke the parent class constructor 
     }
-
-    public function getCost()
-    {
-        return $this->coffee->getCost() + 3;
+    
+    @Override
+    public double getCost() {
+        return super.getCost() + 1.0;
     }
+    
+    @Override
+    public String getDescription(){
+        return super.getDescription() + ", milk";
+    }
+}
 
-    public function getDescription()
-    {
-        return $this->coffee->getDescription() . ', vanilla';
+class WhipCoffee extends CoffeeDecorator {
+    public WhipCoffee(Coffee c) {
+        super(c); // invoke the parent class constructor 
+    }
+    
+    @Override
+    public double getCost() {
+        return super.getCost() + 2.0;
+    }
+    
+    @Override
+    public String getDescription(){
+        return super.getDescription() + ", whipped";
+    }
+}
+
+class VanillaCoffee extends CoffeeDecorator {
+    public VanillaCoffee(Coffee c) {
+        super(c); // invoke the parent class constructor 
+    }
+    
+    @Override
+    public double getCost() {
+        return super.getCost() + 3.0;
+    }
+    
+    @Override
+    public String getDescription(){
+        return super.getDescription() + ", vanilla";
     }
 }
 ```
 
 Lets make a coffee now
 
-```php
-$someCoffee = new SimpleCoffee();
-echo $someCoffee->getCost(); // 10
-echo $someCoffee->getDescription(); // Simple Coffee
+```java
+Coffee coffee = new SimpleCoffee();
+System.out.println(coffee.getCost());  // 10.0
 
-$someCoffee = new MilkCoffee($someCoffee);
-echo $someCoffee->getCost(); // 12
-echo $someCoffee->getDescription(); // Simple Coffee, milk
+coffee = new VanillaCoffee(coffee);
+System.out.println(coffee.getCost());  // 13.0
 
-$someCoffee = new WhipCoffee($someCoffee);
-echo $someCoffee->getCost(); // 17
-echo $someCoffee->getDescription(); // Simple Coffee, milk, whip
-
-$someCoffee = new VanillaCoffee($someCoffee);
-echo $someCoffee->getCost(); // 20
-echo $someCoffee->getDescription(); // Simple Coffee, milk, whip, vanilla
+coffee = new MilkCoffee(coffee);
+System.out.println(coffee.getDescription()); // Simple coffee, vanilla, milk
 ```
 
-📦 Facade [[↥](#structural-design-patterns)]
+📦 Facade 
 ----------------
+[[↥](#structural-design-patterns)]
 
 Real world example
 > How do you turn on the computer? "Hit the power button" you say! That is what you believe because you are using a simple interface that computer provides on the outside, internally it has to do a lot of stuff to make it happen. This simple interface to the complex subsystem is a facade.
@@ -1062,9 +1013,9 @@ $computer->turnOn(); // Ouch! Beep beep! Loading.. Ready to be used!
 $computer->turnOff(); // Bup bup buzzz! Haah! Zzzzz
 ```
 
-🍃 Flyweight [[↥](#structural-design-patterns)]
+🍃 Flyweight 
 ---------
-
+[[↥](#structural-design-patterns)]
 Real world example
 > Did you ever have fresh tea from some stall? They often make more than one cup that you demanded and save the rest for any other customer so to save the resources e.g. gas etc. Flyweight pattern is all about that i.e. sharing.
 
@@ -1078,73 +1029,120 @@ Wikipedia says
 
 Translating our tea example from above. First of all we have tea types and tea maker
 
-```php
-// Anything that will be cached is flyweight.
-// Types of tea here will be flyweights.
-class KarakTea
-{
+```java
+class Tea {
+    TeaType type;
+    
+    public Tea(TeaType type) {
+        this.type = type;
+    }
+    
+    public String getName() {
+        return type.name;
+    }
+    
+    public double getCost() {
+        return type.cost;
+    }
+}
+
+// Anything that can be cached is a flyweight!
+// This is a flyweight object!
+class TeaType {
+    String name;
+    double cost;
+    String otherData;
+    
+    public TeaType(String name, double cost, String otherData) {
+        this.name = name;
+        this.cost = cost;
+        this.otherData = otherData;
+    }
 }
 
 // Acts as a factory and saves the tea
-class TeaMaker
-{
-    protected $availableTea = [];
-
-    public function make($preference)
-    {
-        if (empty($this->availableTea[$preference])) {
-            $this->availableTea[$preference] = new KarakTea();
+class TeaFactory {
+    Map<String, TeaType> teaCache = new HashMap<>();
+    
+    public TeaType getTeaType(String name, double cost, String otherData) {
+        TeaType type = teaCache.get(name);
+        
+        if(type == null) {
+            type = new TeaType(name, cost, otherData);
+            teaCache.put(name, type);
         }
-
-        return $this->availableTea[$preference];
+        
+        return type;
+    }
+    
+    public int getTeaCacheSize() {
+        return teaCache.size();
     }
 }
 ```
 
-Then we have the `TeaShop` which takes orders and serves them
+Then we have the `TeaShop` which takes orders and serves `Orders`
 
-```php
-class TeaShop
-{
-    protected $orders;
-    protected $teaMaker;
-
-    public function __construct(TeaMaker $teaMaker)
-    {
-        $this->teaMaker = $teaMaker;
+```java
+class Order {
+    Tea tea;
+    int table;
+    
+    public Order(Tea tea, int table) {
+        this.tea = tea;
+        this.table = table;
     }
+}
 
-    public function takeOrder(string $teaType, int $table)
-    {
-        $this->orders[$table] = $this->teaMaker->make($teaType);
+// creates new Tea objects using flyweight objects
+class TeaShop {
+    TeaFactory teaFactory = new TeaFactory();
+    List<Order> orders;
+    
+    public TeaShop(TeaFactory teaFactory) {
+        this.orders = new ArrayList<>();
+        this.teaFactory = teaFactory;
+    }    
+        
+    public void takeOrder(String name, double cost, String otherData, int table) {
+        TeaType type = teaFactory.getTeaType(name, cost, otherData);
+        Order order = new Order(new Tea(type), table);
+        orders.add(order);
     }
-
-    public function serve()
-    {
-        foreach ($this->orders as $table => $tea) {
-            echo "Serving tea to table# " . $table;
+    
+    public void serve() {
+        
+        for(Order order : orders) {
+            System.out.println("Serving: " + order.tea.getName() + " at table " + order.table);
         }
     }
 }
 ```
 And it can be used as below
 
-```php
-$teaMaker = new TeaMaker();
-$shop = new TeaShop($teaMaker);
+```java
+TeaFactory teaFactory = new TeaFactory();
+TeaShop shop = new TeaShop(teaFactory);
 
-$shop->takeOrder('less sugar', 1);
-$shop->takeOrder('more milk', 2);
-$shop->takeOrder('without sugar', 5);
+shop.takeOrder("Espresso", 10.0, "with sugar", 1);
+shop.takeOrder("Espresso", 10.0, "with milk", 1);
+shop.takeOrder("Macchiato", 12.5, "", 2);
+shop.takeOrder("Macchiato", 12.5, "with Sugar", 3);
 
-$shop->serve();
-// Serving tea to table# 1
-// Serving tea to table# 2
-// Serving tea to table# 5
+shop.serve();
+
+// Serving: Espresso at table 1
+// Serving: Espresso at table 1
+// Serving: Macchiato at table 2
+// Serving: Macchiato at table 3
+
+System.out.println("Cache size: "+teaFactory.getTeaCacheSize());  // 2
 ```
+Note how we took 4 orders but out cache size is just 2.
 
-🎱 Proxy [[↥](#structural-design-patterns)]
+🎱 Proxy 
 -------------------
+[[↥](#structural-design-patterns)]
 Real world example
 > Have you ever used an access card to go through a door? There are multiple options to open that door i.e. it can be opened either using access card or by pressing a button that bypasses the security. The door's main functionality is to open but there is a proxy added on top of it to add some functionality. Let me better explain it using the code example below.
 
@@ -1219,9 +1217,9 @@ $door->close(); // Closing lab door
 ```
 Yet another example would be some sort of data-mapper implementation. For example, I recently made an ODM (Object Data Mapper) for MongoDB using this pattern where I wrote a proxy around mongo classes while utilizing the magic method `__call()`. All the method calls were proxied to the original mongo class and result retrieved was returned as it is but in case of `find` or `findOne` data was mapped to the required class objects and the object was returned instead of `Cursor`.
 
-Behavioral Design Patterns [[↥](#introduction)]
+Behavioral Design Patterns 
 ==========================
-
+[[↥](#introduction)]
 In plain words
 > It is concerned with assignment of responsibilities between the objects. What makes them different from structural patterns is they don't just specify the structure but also outline the patterns for message passing/communication between them. Or in other words, they assist in answering "How to run a behavior in software component?"
 
@@ -1239,9 +1237,9 @@ Wikipedia says
 * [State](#-state)
 * [Template Method](#-template-method)
 
-🔗 Chain of Responsibility [[↥](#behavioral-design-patterns)]
+🔗 Chain of Responsibility 
 -----------------------
-
+[[↥](#behavioral-design-patterns)]
 Real world example
 > For example, you have three payment methods (`A`, `B` and `C`) setup in your account; each having a different amount in it. `A` has 100 USD, `B` has 300 USD and `C` having 1000 USD and the preference for payments is chosen as `A` then `B` then `C`. You try to purchase something that is worth 210 USD. Using Chain of Responsibility, first of all account `A` will be checked if it can make the purchase, if yes purchase will be made and the chain will be broken. If not, request will move forward to account `B` checking for amount if yes chain will be broken otherwise the request will keep forwarding till it finds the suitable handler. Here `A`, `B` and `C` are links of the chain and the whole phenomenon is Chain of Responsibility.
 
