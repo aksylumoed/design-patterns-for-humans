@@ -1081,7 +1081,7 @@ class TeaFactory {
 }
 ```
 
-Then we have the `TeaShop` which takes orders and serves `Orders`
+Then we have the `TeaShop` which takes and serves `Orders`
 
 ```java
 class Order {
@@ -1138,7 +1138,7 @@ shop.serve();
 
 System.out.println("Cache size: "+teaFactory.getTeaCacheSize());  // 2
 ```
-Note how we took 4 orders but out cache size is just 2.
+Note that we took 4 orders but our cache size is just 2.
 
 🎱 Proxy 
 -------------------
@@ -1562,9 +1562,9 @@ foreach($stationList as $station) {
 $stationList->removeStation(new RadioStation(89)); // Will remove station 89
 ```
 
-👽 Mediator [[↥](#behavioral-design-patterns)]
+👽 Mediator 
 ========
-
+[[↥](#behavioral-design-patterns)]
 Real world example
 > A general example would be when you talk to someone on your mobile phone, there is a network provider sitting between you and them and your conversation goes through it instead of being directly sent. In this case network provider is mediator.
 
@@ -1580,62 +1580,58 @@ Here is the simplest example of a chat room (i.e. mediator) with users (i.e. col
 
 First of all, we have the mediator i.e. the chat room
 
-```php
-interface ChatRoomMediator 
-{
-    public function showMessage(User $user, string $message);
+```java
+interface ChatRoomMediator {
+    public void showMessage(User user, String message);
 }
 
 // Mediator
-class ChatRoom implements ChatRoomMediator
-{
-    public function showMessage(User $user, string $message)
-    {
-        $time = date('M d, y H:i');
-        $sender = $user->getName();
-
-        echo $time . '[' . $sender . ']:' . $message;
+class ChatRoom implements ChatRoomMediator {
+    public void showMessage(User user, String message) {
+        LocalTime time = LocalTime.now();
+        
+        System.out.println(time + " [" + user.getName() + "]: " + message);
     }
 }
 ```
 
 Then we have our users i.e. colleagues
-```php
+```java
 class User {
-    protected $name;
-    protected $chatMediator;
-
-    public function __construct(string $name, ChatRoomMediator $chatMediator) {
-        $this->name = $name;
-        $this->chatMediator = $chatMediator;
+    private String name; // can't change the name
+    ChatRoomMediator chatMediator;
+    
+    User(String name, ChatRoomMediator chatMediator) {
+        this.name = name;
+        this.chatMediator = chatMediator;
     }
-
-    public function getName() {
-        return $this->name;
+    
+    public String getName() {
+        return this.name;
     }
-
-    public function send($message) {
-        $this->chatMediator->showMessage($this, $message);
+    
+    public void send(String message) {
+        this.chatMediator.showMessage(this, message);
     }
 }
 ```
 And the usage
-```php
-$mediator = new ChatRoom();
+```java
+ChatRoom chatRoom = new ChatRoom();
 
-$john = new User('John Doe', $mediator);
-$jane = new User('Jane Doe', $mediator);
+User alice = new User("Alice", chatRoom);
+User bob = new User("Bob", chatRoom);
 
-$john->send('Hi there!');
-$jane->send('Hey!');
+alice.send("Hello!");
+bob.send("Sah!");
 
-// Output will be
-// Feb 14, 10:58 [John]: Hi there!
-// Feb 14, 10:58 [Jane]: Hey!
+// 09:27:37.173 [Alice]: Hello!
+// 09:27:37.179 [Bob]: Sah!
 ```
 
-💾 Memento [[↥](#behavioral-design-patterns)]
+💾 Memento 
 -------
+[[↥](#behavioral-design-patterns)]
 Real world example
 > Take the example of calculator (i.e. originator), where whenever you perform some calculation the last calculation is saved in memory (i.e. memento) so that you can get back to it and maybe get it restored using some action buttons (i.e. caretaker).
 
@@ -1653,78 +1649,65 @@ Lets take an example of text editor which keeps saving the state from time to ti
 
 First of all we have our memento object that will be able to hold the editor state
 
-```php
-class EditorMemento
-{
-    protected $content;
-
-    public function __construct(string $content)
-    {
-        $this->content = $content;
+```java
+class EditorMemento {
+    protected String content;
+    
+    public EditorMemento(String content) {
+        this.content = content;
     }
-
-    public function getContent()
-    {
-        return $this->content;
+    
+    public String getContent() {
+        return this.content;
     }
 }
 ```
 
 Then we have our editor i.e. originator that is going to use memento object
 
-```php
-class Editor
-{
-    protected $content = '';
-
-    public function type(string $words)
-    {
-        $this->content = $this->content . ' ' . $words;
+```java
+class Editor {
+    protected StringBuilder content = new StringBuilder();
+    
+    public void type(String words) {
+        content.append(words);
     }
-
-    public function getContent()
-    {
-        return $this->content;
+    
+    public EditorMemento save() {
+        return new EditorMemento(content.toString());
     }
-
-    public function save()
-    {
-        return new EditorMemento($this->content);
+    
+    public void restore(EditorMemento memento) {
+        this.content.setLength(0);
+        this.content.append(memento.getContent());
     }
-
-    public function restore(EditorMemento $memento)
-    {
-        $this->content = $memento->getContent();
+    
+    public void getContent(){
+        System.out.println(this.content.toString());
     }
-}
+} 
 ```
 
 And then it can be used as
 
-```php
-$editor = new Editor();
-
+```java
+Editor editor = new Editor();
 // Type some stuff
-$editor->type('This is the first sentence.');
-$editor->type('This is second.');
+editor.type("This is the first sentence. ");
+editor.type("This is the second. ");
 
 // Save the state to restore to : This is the first sentence. This is second.
-$saved = $editor->save();
+EditorMemento saved = editor.save();
 
-// Type some more
-$editor->type('And this is third.');
-
-// Output: Content before Saving
-echo $editor->getContent(); // This is the first sentence. This is second. And this is third.
-
-// Restoring to last saved state
-$editor->restore($saved);
-
-$editor->getContent(); // This is the first sentence. This is second.
+editor.type("Third!");
+editor.getContent(); // This is the first sentence. This is the second. Third!
+editor.restore(saved);            
+editor.getContent(); // This is the first sentence. This is the second. 
 ```
 
-😎 Observer [[↥](#behavioral-design-patterns)]
+😎 Observer
 --------
+[[↥](#behavioral-design-patterns)]
 Real world example
 > A good example would be the job seekers where they subscribe to some job posting site and they are notified whenever there is a matching job opportunity.   
 
@@ -1737,83 +1720,82 @@ Wikipedia says
 **Programmatic example**
 
 Translating our example from above. First of all we have job seekers that need to be notified for a job posting
-```php
-class JobPost
-{
-    protected $title;
-
-    public function __construct(string $title)
-    {
-        $this->title = $title;
+```java
+class JobPost {
+    String title;
+    
+    public JobPost(String title) {
+        this.title = title;
     }
-
-    public function getTitle()
-    {
-        return $this->title;
+    
+    public String getTitle() {
+        return this.title;
     }
 }
 
-class JobSeeker implements Observer
-{
-    protected $name;
+interface Observer {
+    public void update(JobPost post);
+}
 
-    public function __construct(string $name)
-    {
-        $this->name = $name;
+// Subscriber/Listener
+class JobSeeker implements Observer {
+    String name;
+    
+    public JobSeeker(String name) {
+        this.name = name;
     }
-
-    public function onJobPosted(JobPost $job)
-    {
-        // Do something with the job posting
-        echo 'Hi ' . $this->name . '! New job posted: '. $job->getTitle();
-    }
+    
+    public void update(JobPost jobPost) {
+        // implementation
+        System.out.println("Hi " + this.name + "! New job posted: " + jobPost.getTitle());
+    } 
 }
 ```
 Then we have our job postings to which the job seekers will subscribe
-```php
-class EmploymentAgency implements Observable
-{
-    protected $observers = [];
-
-    protected function notify(JobPost $jobPosting)
-    {
-        foreach ($this->observers as $observer) {
-            $observer->onJobPosted($jobPosting);
+```java
+// Publisher
+class EmploymentAgency {
+    Set<Observer> observers = new HashSet<>();
+    
+    public void notify(JobPost post) {
+        for(Observer observer : this.observers) {
+            observer.update(post);
         }
     }
-
-    public function attach(Observer $observer)
-    {
-        $this->observers[] = $observer;
+    
+    public void subscribe(Observer observer) {
+        this.observers.add(observer);
     }
-
-    public function addJob(JobPost $jobPosting)
-    {
-        $this->notify($jobPosting);
+    
+    public void unsubsubscribe(Observer observer) {
+        this.observers.remove(observer);
+    }
+    
+    public void addJob(JobPost post) {
+        notify(post);
     }
 }
 ```
 Then it can be used as
-```php
-// Create subscribers
-$johnDoe = new JobSeeker('John Doe');
-$janeDoe = new JobSeeker('Jane Doe');
+```java
+// create subscribers
+JobSeeker alice = new JobSeeker("Alice A");
+JobSeeker bob = new JobSeeker("Bob B");
 
-// Create publisher and attach subscribers
-$jobPostings = new EmploymentAgency();
-$jobPostings->attach($johnDoe);
-$jobPostings->attach($janeDoe);
+// create publisher
+EmploymentAgency publisher = new EmploymentAgency();
+publisher.subscribe(alice); 
+publisher.subscribe(bob);
 
-// Add a new job and see if subscribers get notified
-$jobPostings->addJob(new JobPost('Software Engineer'));
-
-// Output
-// Hi John Doe! New job posted: Software Engineer
-// Hi Jane Doe! New job posted: Software Engineer
+publisher.addJob(new JobPost("Software Engineer"));
+// output: 
+// Hi Bob B! New job posted: Software Engineer
+// Hi Alice A! New job posted: Software Engineer
 ```
 
-🏃 Visitor [[↥](#behavioral-design-patterns)]
+🏃 Visitor 
 -------
+[[↥](#behavioral-design-patterns)]
 Real world example
 > Consider someone visiting Dubai. They just need a way (i.e. visa) to enter Dubai. After arrival, they can come and visit any place in Dubai on their own without having to ask for permission or to do some leg work in order to visit any place here; just let them know of a place and they can visit it. Visitor pattern lets you do just that, it helps you add places to visit so that they can visit as much as they can without having to do any legwork.
 
@@ -1827,133 +1809,120 @@ Wikipedia says
 
 Let's take an example of a zoo simulation where we have several different kinds of animals and we have to make them Sound. Let's translate this using visitor pattern
 
-```php
+```java
 // Visitee
-interface Animal
-{
-    public function accept(AnimalOperation $operation);
+interface Animal {
+    public void accept(AnimalOperation operation);
 }
 
 // Visitor
-interface AnimalOperation
-{
-    public function visitMonkey(Monkey $monkey);
-    public function visitLion(Lion $lion);
-    public function visitDolphin(Dolphin $dolphin);
+interface AnimalOperation {
+    public void visitMonkey(Monkey monkey);
+    public void visitLion(Lion lion);
+    public void visitDolphin(Dolphin dolphin);
 }
 ```
 Then we have our implementations for the animals
-```php
-class Monkey implements Animal
-{
-    public function shout()
-    {
-        echo 'Ooh oo aa aa!';
+```java
+class Monkey implements Animal {
+    // functionality that is already implemented
+    public void shout() {
+        System.out.println("Ooh oo aa aa!");
     }
-
-    public function accept(AnimalOperation $operation)
-    {
-        $operation->visitMonkey($this);
+    
+    public void accept(AnimalOperation operation) {
+        operation.visitMonkey(this);
     }
 }
 
-class Lion implements Animal
-{
-    public function roar()
-    {
-        echo 'Roaaar!';
+class Lion implements Animal {
+    // functionality that is already implemented
+    public void roar() {
+        System.out.println("Roooaarr!");
     }
-
-    public function accept(AnimalOperation $operation)
-    {
-        $operation->visitLion($this);
+    
+    public void accept(AnimalOperation operation) {
+        operation.visitLion(this);
     }
 }
 
-class Dolphin implements Animal
-{
-    public function speak()
-    {
-        echo 'Tuut tuttu tuutt!';
+class Dolphin implements Animal {
+    // functionality that is already implemented
+    public void speak() {
+        System.out.println("Tuut tuttu tuuutt!!");
     }
-
-    public function accept(AnimalOperation $operation)
-    {
-        $operation->visitDolphin($this);
+    
+    public void accept(AnimalOperation operation) {
+        operation.visitDolphin(this);
     }
 }
 ```
 Let's implement our visitor
-```php
-class Speak implements AnimalOperation
-{
-    public function visitMonkey(Monkey $monkey)
-    {
-        $monkey->shout();
+```java
+// visitor
+class Speak implements AnimalOperation {
+    public void visitMonkey(Monkey monkey) {
+        monkey.shout();
     }
-
-    public function visitLion(Lion $lion)
-    {
-        $lion->roar();
+    
+    public void visitLion(Lion lion) {
+        lion.roar();
     }
-
-    public function visitDolphin(Dolphin $dolphin)
-    {
-        $dolphin->speak();
+    
+    public void visitDolphin(Dolphin dolphin) {
+        dolphin.speak();
     }
 }
 ```
 
 And then it can be used as
 ```php
-$monkey = new Monkey();
-$lion = new Lion();
-$dolphin = new Dolphin();
+Monkey monkey = new Monkey();
+Lion lion = new Lion();
+Dolphin dolphin = new Dolphin();
 
-$speak = new Speak();
+Speak speak = new Speak();
 
-$monkey->accept($speak);    // Ooh oo aa aa!    
-$lion->accept($speak);      // Roaaar!
-$dolphin->accept($speak);   // Tuut tutt tuutt!
+monkey.accept(speak);  // Ooh oo aa aa!
+lion.accept(speak);    // Roooaarr!
+dolphin.accept(speak); // Tuut tuttu tuuutt!!
+
 ```
 We could have done this simply by having an inheritance hierarchy for the animals but then we would have to modify the animals whenever we would have to add new actions to animals. But now we will not have to change them. For example, let's say we are asked to add the jump behavior to the animals, we can simply add that by creating a new visitor i.e.
 
-```php
-class Jump implements AnimalOperation
-{
-    public function visitMonkey(Monkey $monkey)
-    {
-        echo 'Jumped 20 feet high! on to the tree!';
+```java
+// new Visitor
+class Jump implements AnimalOperation {
+    public void visitMonkey(Monkey monkey) {
+        System.out.println("Jumped 20 feet high! on to the tree!");
     }
-
-    public function visitLion(Lion $lion)
-    {
-        echo 'Jumped 7 feet! Back on the ground!';
+    
+    public void visitLion(Lion lion) {
+        System.out.println("Jumped 7 feet! Back on the ground!");
     }
-
-    public function visitDolphin(Dolphin $dolphin)
-    {
-        echo 'Walked on water a little and disappeared';
+    
+    public void visitDolphin(Dolphin dolphin) {
+        System.out.println("Walked on water a little and disappeared");
     }
 }
 ```
 And for the usage
 ```php
-$jump = new Jump();
+Jump jump = new Jump();
 
-$monkey->accept($speak);   // Ooh oo aa aa!
-$monkey->accept($jump);    // Jumped 20 feet high! on to the tree!
+monkey.accept(speak);   // Ooh oo aa aa!
+monkey.accept(jump);    // Jumped 20 feet high! on to the tree!
 
-$lion->accept($speak);     // Roaaar!
-$lion->accept($jump);      // Jumped 7 feet! Back on the ground!
+lion.accept(speak);     // Roaaar!
+lion.accept(jump);      // Jumped 7 feet! Back on the ground!
 
-$dolphin->accept($speak);  // Tuut tutt tuutt!
-$dolphin->accept($jump);   // Walked on water a little and disappeared
+dolphin.accept(speak);  // Tuut tutt tuutt!
+dolphin.accept(jump);   // Walked on water a little and disappeared
 ```
 
-💡 Strategy [[↥](#behavioral-design-patterns)]
+💡 Strategy 
 -------- 
-
+[[↥](#behavioral-design-patterns)]
 Real world example
 > Consider the example of sorting, we implemented bubble sort but the data started to grow and bubble sort started getting very slow. In order to tackle this we implemented Quick sort. But now although the quick sort algorithm was doing better for large datasets, it was very slow for smaller datasets. In order to handle this we implemented a strategy where for small datasets, bubble sort will be used and for larger, quick sort.
 
